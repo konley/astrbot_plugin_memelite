@@ -71,6 +71,7 @@ class MemeManager:
         self.collect = collect
         self.memes: list[Meme] = []
         self.meme_keywords: list[str] = []
+        self._keyword_aliases: dict[str, str] = {}
 
         self.render_meme_list_func: Any = None
         self.check_resources_func: Any = None
@@ -122,6 +123,11 @@ class MemeManager:
         self.meme_keywords = [
             keyword for meme in self.memes for keyword in self._get_keywords(meme)
         ]
+        aliases: dict[str, str] = dict(self.conf.get("keyword_aliases", {}) or {})
+        self._keyword_aliases = {}
+        for alias, original in aliases.items():
+            if original in self.meme_keywords:
+                self._keyword_aliases[alias] = original
 
     def _ensure_memes_loaded(self) -> bool:
         if not self.memes:
@@ -199,16 +205,20 @@ class MemeManager:
     def is_meme_keyword(self, meme_name: str) -> bool:
         if not self._ensure_memes_loaded():
             return False
-        return meme_name in self.meme_keywords
+        return meme_name in self.meme_keywords or meme_name in self._keyword_aliases
 
     def match_meme_keyword(self, text: str, fuzzy_match: bool) -> str | None:
         if not self._ensure_memes_loaded():
             return None
 
+        first_word = text.split()[0] if text.split() else ""
+
+        if first_word in self._keyword_aliases:
+            return self._keyword_aliases[first_word]
+
         if fuzzy_match:
             return next((keyword for keyword in self.meme_keywords if keyword in text), None)
 
-        first_word = text.split()[0] if text.split() else ""
         return next((keyword for keyword in self.meme_keywords if keyword == first_word), None)
 
     async def render_meme_list_image(self) -> bytes | None:

@@ -45,5 +45,11 @@
         "type": "list",
         "hint": "黑名单里的关键词会被屏蔽而无法触发meme",
         "default": []
+    },
+    "keyword_aliases": {
+        "description": "自定义触发关键词别名",
+        "type": "object",
+        "hint": "键为自定义触发词，值为原关键词。如 {\"rua\": \"摸\"} 则输入 'rua' 等价于触发 '摸'。可用来改名避免冲突",
+        "default": {}
     }
 }

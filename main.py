@@ -78,7 +78,7 @@ class MemePlugin(Star):
     ):
         """启用meme"""
         if not meme_name:
-            yield event.plain_result("未指定要禁用的meme")
+            yield event.plain_result("未指定要启用的meme")
             return
         if not self.manager.is_meme_keyword(meme_name):
             yield event.plain_result(f"meme: {meme_name} 不存在")
@@ -138,6 +138,7 @@ class MemePlugin(Star):
                 pass
 
         if image:
+            logger.info(f"[astrbot_plugin_memelite] 触发 meme: {keyword}")
             yield event.chain_result([Comp.Image.fromBytes(image)])  # type: ignore
 
     async def terminate(self):
