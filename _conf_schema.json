@@ -43,13 +43,13 @@
     "memes_disabled_list": {
         "description": "meme黑名单",
         "type": "list",
-        "hint": "黑名单里的关键词会被屏蔽而无法触发meme",
+        "hint": "黑名单里的关键词会被屏蔽而无法触发meme。发送 /meme列表 查看全部可用关键词",
         "default": []
     },
     "keyword_aliases": {
         "description": "自定义触发关键词别名",
         "type": "template_list",
-        "hint": "自定义触发词到原关键词的映射。alias=自定义触发词，original=原关键词。如 alias='rua', original='摸' 则输入 'rua' 等价于触发 '摸'",
+        "hint": "自定义触发词到原关键词的映射。alias=自定义触发词，original=原关键词。如 alias='rua', original='摸' 则输入 'rua' 等价于触发 '摸'。发送 /meme列表 查看全部可用关键词",
         "items": {
             "alias": {
                 "description": "自定义触发词",

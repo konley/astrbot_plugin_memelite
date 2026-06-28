@@ -9,7 +9,7 @@ from astrbot.core import AstrBotConfig
 from astrbot.core.platform import AstrMessageEvent
 from astrbot.core.star.filter.event_message_type import EventMessageType
 
-from .core.meme import MemeManager
+from .core.meme import MEME_GENERATOR_AVAILABLE, MemeManager
 from .core.param import ParamsCollector
 from .utils import compress_image
 
@@ -27,10 +27,18 @@ class MemePlugin(Star):
 
     @filter.command("meme帮助", alias={"表情帮助", "meme菜单", "meme列表"})
     async def memes_help(self, event):
+        count = len(self.manager.meme_keywords)
+        aliases = self.manager._keyword_aliases
+        alias_count = len(aliases)
+        lines = [
+            f"可用关键词: {count} 个",
+        ]
+        if alias_count:
+            lines.append(f"自定义别名: {alias_count} 个")
+        lines.append("在 WebUI 插件配置中可将关键词加入黑名单，或自定义别名")
+        yield event.plain_result("\n".join(lines))
         if output := await self.manager.render_meme_list_image():
             yield event.chain_result([Comp.Image.fromBytes(output)])
-        else:
-            yield event.plain_result("meme列表图生成失败")
 
     @filter.command("meme详情", alias={"表情详情", "meme信息"})
     async def meme_details_show(
