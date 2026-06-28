@@ -123,6 +123,9 @@ class MemeManager:
         self.meme_keywords = [
             keyword for meme in self.memes for keyword in self._get_keywords(meme)
         ]
+        self._load_aliases()
+
+    def _load_aliases(self):
         aliases: dict[str, str] = dict(self.conf.get("keyword_aliases", {}) or {})
         self._keyword_aliases = {}
         for alias, original in aliases.items():
@@ -132,6 +135,7 @@ class MemeManager:
     def _ensure_memes_loaded(self) -> bool:
         if not self.memes:
             self._load_memes()
+        self._load_aliases()
         return bool(self.memes)
 
     @staticmethod
@@ -191,9 +195,14 @@ class MemeManager:
 
         self._load_memes()
 
+    def _resolve_alias(self, word: str) -> str:
+        return self._keyword_aliases.get(word, word)
+
     def find_meme(self, keyword: str) -> Meme | None:
         if not self._ensure_memes_loaded():
             return None
+
+        keyword = self._resolve_alias(keyword)
 
         for meme in self.memes:
             keywords = self._get_keywords(meme)
@@ -214,7 +223,7 @@ class MemeManager:
         first_word = text.split()[0] if text.split() else ""
 
         if first_word in self._keyword_aliases:
-            return self._keyword_aliases[first_word]
+            return first_word
 
         if fuzzy_match:
             return next((keyword for keyword in self.meme_keywords if keyword in text), None)
