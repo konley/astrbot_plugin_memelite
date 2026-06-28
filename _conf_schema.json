@@ -48,11 +48,20 @@
     },
     "keyword_aliases": {
         "description": "自定义触发关键词别名",
-        "type": "object",
+        "type": "template_list",
+        "hint": "自定义触发词到原关键词的映射。alias=自定义触发词，original=原关键词。如 alias='rua', original='摸' 则输入 'rua' 等价于触发 '摸'",
         "items": {
-            "type": "string"
+            "alias": {
+                "description": "自定义触发词",
+                "type": "string",
+                "default": ""
+            },
+            "original": {
+                "description": "原关键词",
+                "type": "string",
+                "default": ""
+            }
         },
-        "hint": "键为自定义触发词，值为原关键词。如 {\"rua\": \"摸\"} 则输入 'rua' 等价于触发 '摸'。可用来改名避免冲突",
-        "default": {}
+        "default": []
     }
 }

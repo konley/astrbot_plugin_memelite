@@ -126,11 +126,18 @@ class MemeManager:
         self._load_aliases()
 
     def _load_aliases(self):
-        aliases: dict[str, str] = dict(self.conf.get("keyword_aliases", {}) or {})
+        raw = self.conf.get("keyword_aliases", []) or []
         self._keyword_aliases = {}
-        for alias, original in aliases.items():
-            if original in self.meme_keywords:
-                self._keyword_aliases[alias] = original
+        if isinstance(raw, dict):
+            for alias, original in raw.items():
+                if original in self.meme_keywords:
+                    self._keyword_aliases[alias] = original
+        elif isinstance(raw, list):
+            for item in raw:
+                alias = item.get("alias", "") if isinstance(item, dict) else ""
+                original = item.get("original", "") if isinstance(item, dict) else ""
+                if alias and original in self.meme_keywords:
+                    self._keyword_aliases[alias] = original
 
     def _ensure_memes_loaded(self) -> bool:
         if not self.memes:
