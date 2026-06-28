@@ -57,7 +57,7 @@
                 "default": ""
             },
             "original": {
-                "description": "原关键词",
+                "description": "原关键词（从 /meme列表 中挑选）",
                 "type": "string",
                 "default": ""
             }
